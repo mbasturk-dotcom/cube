@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Alp Baştürk — Product Engineer</title>
+    <meta
+      name="description"
+      content="Portfolio of Alp Baştürk, product engineer. Six sections on a rotating cube: about, experience, projects, skills, education and contact."
+    />
+    <meta name="color-scheme" content="light" />
+    <meta name="theme-color" content="#f4f4f2" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Alp Baştürk — Product Engineer" />
+    <meta
+      property="og:description"
+      content="An interactive cube portfolio. Rotate to explore six sections."
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <script>
+      // Hide the flat document while the cube boots, so the page does not flash
+      // as a long vertical list before the 3D layout takes over. A watchdog puts
+      // the flat document back if the module never manages to initialise.
+      (function () {
+        var root = document.documentElement;
+        root.classList.add('js');
+        window.__cubeBootTimer = window.setTimeout(function () {
+          root.classList.remove('js');
+        }, 3000);
+      })();
+    </script>
+  </head>
+
+  <body>
+    <a class="skip-link" href="#faces">Skip to content</a>
+
+    <header class="site-header">
+      <p class="wordmark"><span aria-hidden="true">◆</span> Alp Baştürk</p>
+      <button
+        id="view-toggle"
+        class="view-toggle"
+        type="button"
+        aria-pressed="false"
+        hidden
+      >
+        View as list
+      </button>
+    </header>
+
+    <main
+      class="stage"
+      id="stage"
+      tabindex="-1"
+      aria-label="Rotating cube. Drag to turn it, or use the arrow keys."
+    >
+      <div class="stage__layer stage__layer--gl" id="gl-layer" aria-hidden="true"></div>
+      <div class="stage__layer stage__layer--css3d" id="css3d-layer"></div>
+
+      <div class="faces" id="faces">
+        <!-- ---------------------------------------------------------------- -->
+        <section class="face" data-face="about" data-label="About" aria-labelledby="about-title">
+          <div class="face__inner">
+            <p class="face__eyebrow">01 — About</p>
+            <h2 class="face__title" id="about-title">Alp Baştürk</h2>
+            <p class="face__lede">
+              Product engineer building fast, accessible interfaces.
+            </p>
+            <ul class="face__points">
+              <li>8 years shipping product</li>
+              <li>Istanbul, Türkiye</li>
+            </ul>
+            <button class="face__more" type="button">Read more</button>
+          </div>
+
+          <div class="face__detail" data-detail-title="About">
+            <p>
+              I design and build the front of digital products — the part people
+              actually touch. My work sits between engineering and design: I care
+              about how fast a page paints, how a control feels under the thumb,
+              and whether someone using a screen reader gets the same product
+              everyone else does.
+            </p>
+            <p>
+              Most of my time goes into design systems, interaction detail, and
+              the unglamorous performance work that makes an interface feel
+              instant. I like problems where the constraint is real — a slow
+              network, a small screen, a deadline.
+            </p>
+            <p>
+              Outside work I tinker with WebGL, take too many photographs of
+              buildings, and keep a running list of typefaces I will probably
+              never use.
+            </p>
+          </div>
+        </section>
+
+        <!-- ---------------------------------------------------------------- -->
+        <section
+          class="face"
+          data-face="experience"
+          data-label="Experience"
+          aria-labelledby="experience-title"
+        >
+          <div class="face__inner">
+            <p class="face__eyebrow">02 — Experience</p>
+            <h2 class="face__title" id="experience-title">Experience</h2>
+            <p class="face__lede">Senior Frontend Engineer at Placeholder Co.</p>
+            <ul class="face__points">
+              <li>Placeholder Co. — 2022 to now</li>
+              <li>Example Studio — 2019 to 2022</li>
+            </ul>
+            <button class="face__more" type="button">Read more</button>
+          </div>
+
+          <div class="face__detail" data-detail-title="Experience">
+            <article class="entry">
+              <h3 class="entry__role">Senior Frontend Engineer</h3>
+              <p class="entry__meta">Placeholder Co. · 2022 — present</p>
+              <ul>
+                <li>Led the rebuild of the customer dashboard, cutting time to interactive by 58%.</li>
+                <li>Owned the design system: 40+ components, adopted by four product teams.</li>
+                <li>Introduced accessibility review to the release process; shipped WCAG 2.2 AA.</li>
+              </ul>
+            </article>
+
+            <article class="entry">
+              <h3 class="entry__role">Frontend Engineer</h3>
+              <p class="entry__meta">Example Studio · 2019 — 2022</p>
+              <ul>
+                <li>Built marketing and product sites for clients in retail and fintech.</li>
+                <li>Set up the studio's shared build tooling and component starter.</li>
+              </ul>
+            </article>
+
+            <article class="entry">
+              <h3 class="entry__role">Junior Developer</h3>
+              <p class="entry__meta">First Job Ltd. · 2017 — 2019</p>
+              <ul>
+                <li>Maintained a large legacy codebase and migrated it off jQuery.</li>
+              </ul>
+            </article>
+          </div>
+        </section>
+
+        <!-- ---------------------------------------------------------------- -->
+        <section
+          class="face"
+          data-face="projects"
+          data-label="Projects"
+          aria-labelledby="projects-title"
+        >
+          <div class="face__inner">
+            <p class="face__eyebrow">03 — Projects</p>
+            <h2 class="face__title" id="projects-title">Projects</h2>
+            <p class="face__lede">Things I built because I wanted them to exist.</p>
+            <ul class="face__points">
+              <li>Cube — this site</li>
+              <li>Palette — contrast checker</li>
+              <li>Slowpoke — bundle budget CI</li>
+            </ul>
+            <button class="face__more" type="button">Read more</button>
+          </div>
+
+          <div class="face__detail" data-detail-title="Projects">
+            <article class="entry">
+              <h3 class="entry__role">Cube</h3>
+              <p class="entry__meta">Three.js · CSS3D · Vite</p>
+              <p>
+                The site you are looking at. Real HTML faces rendered in 3D space
+                so the content stays selectable, indexable and readable by
+                assistive technology.
+              </p>
+              <p><a href="#">Source</a></p>
+            </article>
+
+            <article class="entry">
+              <h3 class="entry__role">Palette</h3>
+              <p class="entry__meta">TypeScript · Web Components</p>
+              <p>
+                A contrast checker that suggests the nearest passing colour
+                instead of only telling you that you failed.
+              </p>
+              <p><a href="#">Source</a></p>
+            </article>
+
+            <article class="entry">
+              <h3 class="entry__role">Slowpoke</h3>
+              <p class="entry__meta">Node · GitHub Actions</p>
+              <p>
+                A CI check that fails a pull request when the JavaScript bundle
+                grows past a budget you agreed on in advance.
+              </p>
+              <p><a href="#">Source</a></p>
+            </article>
+          </div>
+        </section>
+
+        <!-- ---------------------------------------------------------------- -->
+        <section class="face" data-face="skills" data-label="Skills" aria-labelledby="skills-title">
+          <div class="face__inner">
+            <p class="face__eyebrow">04 — Skills</p>
+            <h2 class="face__title" id="skills-title">Skills</h2>
+            <ul class="face__tags">
+              <li>TypeScript</li>
+              <li>React</li>
+              <li>Three.js</li>
+              <li>CSS</li>
+              <li>Node</li>
+              <li>Accessibility</li>
+            </ul>
+            <button class="face__more" type="button">Read more</button>
+          </div>
+
+          <div class="face__detail" data-detail-title="Skills">
+            <article class="entry">
+              <h3 class="entry__role">Languages</h3>
+              <p>TypeScript, JavaScript, HTML, CSS, SQL, a working amount of Go.</p>
+            </article>
+            <article class="entry">
+              <h3 class="entry__role">Frameworks &amp; tools</h3>
+              <p>React, Vite, Three.js, Node, Playwright, Figma.</p>
+            </article>
+            <article class="entry">
+              <h3 class="entry__role">Practice</h3>
+              <p>
+                Design systems, performance budgets, WCAG 2.2, progressive
+                enhancement, mentoring.
+              </p>
+            </article>
+          </div>
+        </section>
+
+        <!-- ---------------------------------------------------------------- -->
+        <section
+          class="face"
+          data-face="education"
+          data-label="Education"
+          aria-labelledby="education-title"
+        >
+          <div class="face__inner">
+            <p class="face__eyebrow">05 — Education</p>
+            <h2 class="face__title" id="education-title">Education</h2>
+            <p class="face__lede">BSc Computer Engineering</p>
+            <ul class="face__points">
+              <li>Example University, 2015 — 2019</li>
+              <li>Graduated with honours</li>
+            </ul>
+            <button class="face__more" type="button">Read more</button>
+          </div>
+
+          <div class="face__detail" data-detail-title="Education">
+            <article class="entry">
+              <h3 class="entry__role">BSc Computer Engineering</h3>
+              <p class="entry__meta">Example University · 2015 — 2019</p>
+              <p>
+                Thesis on real-time rendering in the browser. Graduated with
+                honours.
+              </p>
+            </article>
+            <article class="entry">
+              <h3 class="entry__role">Certificates</h3>
+              <ul>
+                <li>Placeholder Accessibility Specialist, 2023</li>
+                <li>Placeholder Cloud Associate, 2021</li>
+              </ul>
+            </article>
+          </div>
+        </section>
+
+        <!-- ---------------------------------------------------------------- -->
+        <section
+          class="face"
+          data-face="contact"
+          data-label="Contact"
+          aria-labelledby="contact-title"
+        >
+          <div class="face__inner">
+            <p class="face__eyebrow">06 — Contact</p>
+            <h2 class="face__title" id="contact-title">Contact</h2>
+            <p class="face__lede">Open to interesting work.</p>
+            <ul class="face__links">
+              <li><a href="mailto:hello@example.com">hello@example.com</a></li>
+              <li><a href="https://github.com/" rel="me noopener">GitHub</a></li>
+              <li><a href="https://www.linkedin.com/" rel="me noopener">LinkedIn</a></li>
+            </ul>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <nav class="face-nav" id="face-nav" aria-label="Sections" hidden></nav>
+
+    <p class="sr-only" aria-live="polite" id="live-region"></p>
+
+    <div class="panel-backdrop" id="panel-backdrop" hidden></div>
+    <div
+      class="panel"
+      id="panel"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="panel-title"
+      hidden
+    >
+      <div class="panel__bar">
+        <h2 class="panel__title" id="panel-title"></h2>
+        <button class="panel__close" id="panel-close" type="button" aria-label="Close">
+          <span aria-hidden="true">✕</span>
+        </button>
+      </div>
+      <div class="panel__body" id="panel-body" tabindex="-1"></div>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

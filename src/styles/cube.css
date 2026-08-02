@@ -1,0 +1,257 @@
+/* ------------------------------------------------------------------ *
+ * Cube mode — a single locked viewport with the cube in the middle.
+ * Everything here is scoped so that removing `.cube-mode` returns the
+ * page to the plain scrolling document defined in base.css.
+ * ------------------------------------------------------------------ */
+html.cube-mode,
+html.cube-mode body {
+  height: 100%;
+}
+
+html.cube-mode body {
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+html.cube-mode .stage {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  touch-action: none;
+  cursor: grab;
+  transition: transform 0.45s var(--ease), opacity 0.35s var(--ease);
+}
+
+html.cube-mode .stage[data-dragging='true'] {
+  cursor: grabbing;
+}
+
+.stage__layer {
+  position: absolute;
+  inset: 0;
+  display: none;
+}
+
+html.cube-mode .stage__layer {
+  display: block;
+}
+
+.stage__layer--gl canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* The CSS3D renderer injects its own container here. */
+.stage__layer--css3d {
+  pointer-events: none;
+}
+
+.stage__layer--css3d > * {
+  pointer-events: auto;
+}
+
+/* Fade the whole assembly in once the first frame has been laid out. */
+html.cube-mode .stage__layer {
+  opacity: 0;
+  transition: opacity 0.4s var(--ease);
+}
+
+html.cube-mode.cube-ready .stage__layer {
+  opacity: 1;
+}
+
+/* ------------------------------------------------------------------ *
+ * A single cube face
+ * ------------------------------------------------------------------ */
+#css3d-layer .face {
+  width: var(--face-size, 320px);
+  height: var(--face-size, 320px);
+  container-type: inline-size;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+  /* The cube is a control, not a document: dragging beats selecting here.
+     The full text stays selectable in the detail panel and in list mode. */
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+#css3d-layer .face__inner {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  padding: clamp(13px, 6.5cqw, 32px);
+  overflow: hidden;
+}
+
+/* A face is a fixed square, so the summary has to fit rather than be
+   squeezed. Nothing shrinks: flexbox would cut text through the middle of a
+   line, which looks broken. Where a small face cannot hold everything, the
+   container queries below drop whole elements instead. */
+#css3d-layer .face__inner > * {
+  flex: 0 0 auto;
+}
+
+#css3d-layer .face__eyebrow {
+  font-size: clamp(9px, 3cqw, 12px);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+#css3d-layer .face__title {
+  margin-top: clamp(4px, 1.5cqw, 10px);
+  font-size: clamp(17px, 8cqw, 34px);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+}
+
+#css3d-layer .face__lede {
+  margin-top: clamp(6px, 2.5cqw, 14px);
+  font-size: clamp(11px, 4.1cqw, 17px);
+  line-height: 1.4;
+  color: var(--ink-muted);
+  /* line-clamp only clips with an overflow to clip against. */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  overflow: hidden;
+}
+
+#css3d-layer .face__points,
+#css3d-layer .face__links {
+  margin-top: clamp(8px, 3.5cqw, 18px);
+  display: grid;
+  gap: clamp(2px, 1.2cqw, 6px);
+  font-size: clamp(10px, 3.6cqw, 15px);
+  color: var(--ink-muted);
+}
+
+#css3d-layer .face__links a {
+  color: var(--accent);
+}
+
+#css3d-layer .face__tags {
+  margin-top: clamp(8px, 3.5cqw, 18px);
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(3px, 1.4cqw, 7px);
+}
+
+#css3d-layer .face__tags li {
+  padding: clamp(1px, 0.7cqw, 4px) clamp(5px, 2.2cqw, 11px);
+  font-size: clamp(9px, 3.2cqw, 14px);
+  color: var(--ink-muted);
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+}
+
+#css3d-layer .face__more {
+  margin-top: auto;
+  align-self: flex-start;
+  padding: clamp(4px, 1.8cqw, 9px) clamp(9px, 3.6cqw, 18px);
+  font-size: clamp(9px, 3.2cqw, 13px);
+  letter-spacing: 0.02em;
+  background: transparent;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  transition: color 0.16s var(--ease), border-color 0.16s var(--ease),
+    background-color 0.16s var(--ease);
+}
+
+#css3d-layer .face__more:hover {
+  color: var(--surface);
+  background: var(--ink);
+  border-color: var(--ink);
+}
+
+/* The long-form content never renders on the face itself. */
+#css3d-layer .face__detail {
+  display: none;
+}
+
+/* Small faces — phones, mostly. Two lines of lede, two bullets. */
+@container (max-width: 250px) {
+  #css3d-layer .face__lede {
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
+
+  #css3d-layer .face__points li:nth-child(n + 3),
+  #css3d-layer .face__links li:nth-child(n + 4) {
+    display: none;
+  }
+}
+
+/* Tiny faces — a short landscape window. Bullets and tags wrap onto two lines
+   each at this width and stop being worth the room, so the face falls back to
+   its headline and the way in. Contact keeps its links: they are the point. */
+@container (max-width: 210px) {
+  #css3d-layer .face__points,
+  #css3d-layer .face__tags {
+    display: none;
+  }
+}
+
+/* Short viewports need the chrome to get out of the way. */
+@media (max-height: 34rem) {
+  :root {
+    --header-h: 2.75rem;
+    --nav-h: 3rem;
+  }
+}
+
+/* ------------------------------------------------------------------ *
+ * While the detail panel is open the cube steps aside
+ * ------------------------------------------------------------------ */
+html.panel-open .stage {
+  opacity: 0.35;
+}
+
+@media (min-width: 62rem) {
+  html.panel-open .stage {
+    transform: translateX(-15%);
+    opacity: 0.55;
+  }
+}
+
+/* ------------------------------------------------------------------ *
+ * List mode hides all of the 3D chrome
+ * ------------------------------------------------------------------ */
+html.list-mode .face-nav {
+  display: none;
+}
+
+/* CSS3DObject writes `position`, `transform`, `user-select` and friends
+   straight onto each section, and those inline styles come along when the
+   sections move back into the document — the Projects face would render
+   upside down. Author `!important` outranks a plain inline declaration, so
+   the overrides lift cleanly when the class comes off again, leaving the
+   renderer's own transform cache untouched. */
+html.list-mode .faces .face {
+  position: static !important;
+  transform: none !important;
+  user-select: auto !important;
+  -webkit-user-select: auto !important;
+}
+
+/* ------------------------------------------------------------------ *
+ * Reduced motion
+ * ------------------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  html.cube-mode .stage,
+  html.cube-mode .stage__layer,
+  .skip-link,
+  .view-toggle {
+    transition-duration: 0.01ms;
+  }
+}
