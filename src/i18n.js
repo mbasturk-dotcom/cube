@@ -165,6 +165,11 @@ const en = {
   more: 'Read more',
 };
 
+const pdfFile = {
+  tr: 'Mehmet_Alp_Basturk_CV.pdf',
+  en: 'MehmetBasturk-Resume.pdf',
+};
+
 const trChrome = {
   'meta.title': 'Mehmet Alp Baştürk — Lider Yazılım Mühendisi',
   'meta.description':
@@ -226,6 +231,13 @@ export function createI18n(doc = document) {
     doc.querySelectorAll('.lang__option').forEach((button) => {
       button.setAttribute('aria-pressed', String(button.dataset.lang === lang));
     });
+
+    const download = doc.querySelector('.header-download');
+    if (download) {
+      const file = pdfFile[lang];
+      download.setAttribute('href', `./${file}`);
+      download.setAttribute('download', file);
+    }
   }
 
   return {
@@ -241,9 +253,9 @@ export function createI18n(doc = document) {
 
 export function storedLang() {
   try {
-    return localStorage.getItem('cube-lang') === 'en' ? 'en' : 'tr';
+    return localStorage.getItem('cube-lang') === 'tr' ? 'tr' : 'en';
   } catch {
-    return 'tr';
+    return 'en';
   }
 }
 
