@@ -119,7 +119,7 @@ export function createPanel({ panel, backdrop, titleElement, bodyElement, closeB
     if (immediate || reducedMotion()) {
       restorePending();
     } else {
-      hideTimer = window.setTimeout(restorePending, 440);
+      hideTimer = window.setTimeout(restorePending, 320);
     }
 
     // Lift the background's `inert` before handing focus back to the

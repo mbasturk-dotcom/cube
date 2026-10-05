@@ -45,7 +45,7 @@ FACES.forEach((face, i) => {
 
 // 2. Faces sit opposite each other as expected.
 [
-  ['about', 'projects'],
+  ['about', 'impact'],
   ['experience', 'skills'],
   ['education', 'contact'],
 ].forEach(([a, b]) => {
@@ -105,8 +105,8 @@ for (let i = 0; i < 5; i += 1) {
   q = restingOrientation(stepped);
 }
 check(
-  'a quarter turn walks About → Experience → Projects → Skills → About',
-  walked.join(',') === 'about,experience,projects,skills,about',
+  'a quarter turn walks About → Experience → Impact → Skills → About',
+  walked.join(',') === 'about,experience,impact,skills,about',
   walked.join(' → '),
 );
 

@@ -10,12 +10,12 @@ const HALF_PI = Math.PI / 2;
  *          that face — it is what we apply to the CSS3DObject.
  *
  * The four "ring" faces come first so that a horizontal turn walks
- * through About → Experience → Projects → Skills.
+ * through About → Experience → Impact → Skills.
  */
 const FACE_TABLE = [
   { id: 'about', normal: new Vector3(0, 0, 1), mount: new Euler(0, 0, 0) },
   { id: 'experience', normal: new Vector3(1, 0, 0), mount: new Euler(0, HALF_PI, 0) },
-  { id: 'projects', normal: new Vector3(0, 0, -1), mount: new Euler(0, Math.PI, 0) },
+  { id: 'impact', normal: new Vector3(0, 0, -1), mount: new Euler(0, Math.PI, 0) },
   { id: 'skills', normal: new Vector3(-1, 0, 0), mount: new Euler(0, -HALF_PI, 0) },
   { id: 'education', normal: new Vector3(0, 1, 0), mount: new Euler(-HALF_PI, 0, 0) },
   { id: 'contact', normal: new Vector3(0, -1, 0), mount: new Euler(HALF_PI, 0, 0) },

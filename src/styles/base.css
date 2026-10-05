@@ -119,6 +119,8 @@ button {
  * Page chrome
  * ------------------------------------------------------------------ */
 .site-header {
+  position: relative;
+  z-index: 5;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -128,6 +130,7 @@ button {
 }
 
 .wordmark {
+  min-width: 0;
   font-size: 0.875rem;
   font-weight: 600;
   letter-spacing: 0.02em;
@@ -138,7 +141,131 @@ button {
   margin-right: 0.35em;
 }
 
-.view-toggle {
+.header-actions {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 0.45rem;
+}
+
+.roll {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0 1rem 0.15rem;
+}
+
+.roll__bar {
+  display: flex;
+  align-items: stretch;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  box-shadow: 0 10px 28px rgb(23 23 26 / 0.07);
+}
+
+.roll__button,
+.roll__help {
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  transition: background-color 0.16s var(--ease), color 0.16s var(--ease);
+}
+
+.roll__button {
+  padding: 0.55rem 1.05rem 0.55rem 1.15rem;
+  font-size: 0.8125rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-radius: 999px 0 0 999px;
+}
+
+.roll__help {
+  width: 2.55rem;
+  padding: 0;
+  border-left: 1px solid var(--line);
+  border-radius: 0 999px 999px 0;
+  font-family: 'UnifrakturMaguntia', 'Times New Roman', serif;
+  font-size: 1.2rem;
+  line-height: 1;
+  color: var(--ink-muted);
+}
+
+.roll__button:hover,
+.roll__help:hover {
+  background: rgb(23 23 26 / 0.04);
+  color: var(--ink);
+}
+
+.roll__button:disabled {
+  cursor: progress;
+  color: var(--ink-faint);
+}
+
+.roll__helpwrap {
+  position: relative;
+  display: flex;
+}
+
+.roll__note {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 0.55rem);
+  z-index: 2;
+  width: min(18rem, 72vw);
+  margin: 0;
+  padding: 0.75rem 0.85rem;
+  font-size: 0.75rem;
+  line-height: 1.45;
+  letter-spacing: 0;
+  text-transform: none;
+  text-align: left;
+  color: var(--ink-muted);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  box-shadow: 0 14px 36px rgb(23 23 26 / 0.1);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.roll__helpwrap:hover .roll__note,
+.roll__helpwrap:focus-within .roll__note,
+.roll__help[aria-expanded='true'] + .roll__note {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.roll__result {
+  min-height: 1.1em;
+  max-width: min(32rem, 92vw);
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.01em;
+  text-align: center;
+  color: var(--ink-muted);
+}
+
+.roll__result:empty {
+  visibility: hidden;
+}
+
+html.list-mode .roll {
+  position: fixed;
+  left: 50%;
+  bottom: 1.25rem;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: calc(100vw - 2rem);
+}
+
+.view-toggle,
+.header-download {
   padding: 0.35rem 0.75rem;
   font-size: 0.75rem;
   letter-spacing: 0.04em;
@@ -147,10 +274,13 @@ button {
   background: transparent;
   border: 1px solid var(--line-strong);
   border-radius: 999px;
+  text-decoration: none;
+  white-space: nowrap;
   transition: color 0.16s var(--ease), border-color 0.16s var(--ease);
 }
 
-.view-toggle:hover {
+.view-toggle:hover,
+.header-download:hover {
   color: var(--ink);
   border-color: var(--ink-faint);
 }
@@ -159,6 +289,25 @@ button {
   color: var(--surface);
   background: var(--ink);
   border-color: var(--ink);
+}
+
+@media (max-width: 520px) {
+  .site-header {
+    height: auto;
+    min-height: var(--header-h);
+    gap: 0.5rem;
+    padding: 0.4rem 0.75rem;
+  }
+
+  .header-actions {
+    gap: 0.3rem;
+  }
+
+  .view-toggle,
+  .header-download {
+    padding: 0.3rem 0.5rem;
+    letter-spacing: 0.02em;
+  }
 }
 
 /* ------------------------------------------------------------------ *
@@ -255,6 +404,23 @@ html.list-mode .faces {
   transition: opacity 0.25s var(--ease);
 }
 
+.face__inner {
+  position: relative;
+}
+
+.face__die {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 1;
+  margin: 0;
+  font-family: 'UnifrakturMaguntia', 'Times New Roman', serif;
+  font-size: 2.25rem;
+  line-height: 0.85;
+  color: var(--ink);
+  pointer-events: none;
+}
+
 .faces .face {
   padding: 2.75rem 0;
   border-top: 1px solid var(--line);
@@ -279,6 +445,14 @@ html.list-mode .faces {
   line-height: 1.15;
 }
 
+.faces .face__place {
+  margin-top: 0.3rem;
+  font-size: 0.9375rem;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  color: var(--ink-muted);
+}
+
 .faces .face__lede {
   margin-top: 0.75rem;
   font-size: 1.0625rem;
@@ -286,11 +460,19 @@ html.list-mode .faces {
 }
 
 .faces .face__points,
-.faces .face__links {
+.faces .face__links,
+.faces .face__hooks {
   margin-top: 1rem;
   display: grid;
   gap: 0.35rem;
   color: var(--ink-muted);
+}
+
+.faces .face__pipeline {
+  margin-top: 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
 }
 
 .faces .face__tags {
@@ -308,9 +490,47 @@ html.list-mode .faces {
   border-radius: 999px;
 }
 
-/* In the document view the detail is simply part of the page. */
+/* In the document view the detail is simply part of the page, so the
+   "Read more" buttons have nothing to open. The contact CTA stays — it is
+   a real mailto link, not a disclosure control. */
 .faces .face__more {
   display: none;
+}
+
+.faces .face__cta {
+  display: inline-block;
+  margin-top: 1rem;
+  color: var(--accent);
+}
+
+.faces .face__contact {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-top: 0.75rem;
+}
+
+.faces .face__qr {
+  width: 11rem;
+  margin-top: 0;
+  margin-left: auto;
+  flex: 0 0 auto;
+  color: var(--ink);
+}
+
+.faces .face__qr svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.faces .face__qr figcaption {
+  margin-top: 0.4rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
 }
 
 .faces .face__detail {
@@ -374,6 +594,17 @@ html.list-mode .faces {
 .face__detail .entry p {
   margin-top: 0.5rem;
   color: var(--ink-muted);
+}
+
+/* The technology list closing each role — a label, not prose, so it reads
+   tighter and quieter than the bullets above it. */
+.face__detail .entry__stack {
+  margin-top: 0.8rem;
+  padding-top: 0.6rem;
+  border-top: 1px dashed var(--line);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--ink-faint);
 }
 
 .face__detail a {

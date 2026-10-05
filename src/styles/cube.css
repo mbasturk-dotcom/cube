@@ -76,8 +76,15 @@ html.cube-mode.cube-ready .stage__layer {
   border: 1px solid var(--line);
   border-radius: 12px;
   overflow: hidden;
+  touch-action: none;
   /* The cube is a control, not a document: dragging beats selecting here.
      The full text stays selectable in the detail panel and in list mode. */
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+#css3d-layer .face * {
+  -webkit-user-drag: none;
   user-select: none;
   -webkit-user-select: none;
 }
@@ -89,6 +96,12 @@ html.cube-mode.cube-ready .stage__layer {
   height: 100%;
   padding: clamp(13px, 6.5cqw, 32px);
   overflow: hidden;
+}
+
+#css3d-layer .face__die {
+  top: clamp(6px, 2.4cqw, 14px);
+  right: clamp(8px, 3.2cqw, 18px);
+  font-size: clamp(26px, 11cqw, 52px);
 }
 
 /* A face is a fixed square, so the summary has to fit rather than be
@@ -112,6 +125,64 @@ html.cube-mode.cube-ready .stage__layer {
   font-weight: 600;
   letter-spacing: -0.025em;
   line-height: 1.1;
+}
+
+#css3d-layer .face[data-face='about'] .face__title {
+  font-size: clamp(16px, 7cqw, 30px);
+}
+
+#css3d-layer .face__place {
+  margin-top: clamp(3px, 1.2cqw, 8px);
+  font-size: clamp(10px, 3.5cqw, 14px);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  color: var(--ink-muted);
+}
+
+#css3d-layer .face[data-face='about'] .face__lede {
+  font-size: clamp(11px, 3.9cqw, 16px);
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
+}
+
+#css3d-layer .face__pipeline {
+  margin-top: clamp(10px, 4cqw, 18px);
+  padding-top: clamp(8px, 3.2cqw, 14px);
+  border-top: 1px solid var(--line);
+  font-size: clamp(9px, 3.2cqw, 13px);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  line-height: 1.4;
+  color: var(--ink);
+}
+
+#css3d-layer .face__hooks {
+  flex: 1 1 auto;
+  min-height: 0;
+  margin-top: clamp(4px, 1.6cqw, 10px);
+  display: grid;
+  align-content: space-evenly;
+  gap: clamp(4px, 1.6cqw, 10px);
+  font-size: clamp(10px, 3.5cqw, 15px);
+  line-height: 1.4;
+  color: var(--ink-muted);
+}
+
+#css3d-layer .face[data-face='experience'] .face__lede {
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+
+#css3d-layer .face[data-face='experience'] .face__points,
+#css3d-layer .face[data-face='impact'] .face__points {
+  flex: 1 1 auto;
+  min-height: 0;
+  align-content: space-evenly;
+}
+
+#css3d-layer .face[data-face='about'] .face__more,
+#css3d-layer .face[data-face='experience'] .face__more {
+  margin-top: clamp(8px, 3cqw, 14px);
 }
 
 #css3d-layer .face__lede {
@@ -155,8 +226,63 @@ html.cube-mode.cube-ready .stage__layer {
   border-radius: 999px;
 }
 
-#css3d-layer .face__more {
+#css3d-layer .face[data-face='contact'] .face__contact {
+  flex: 1 1 auto;
+  min-height: 0;
+  margin-top: clamp(8px, 2.5cqw, 16px);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: clamp(10px, 3cqw, 18px);
+}
+
+#css3d-layer .face[data-face='contact'] .face__contact-copy {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+#css3d-layer .face[data-face='contact'] .face__contact-copy .face__lede,
+#css3d-layer .face[data-face='contact'] .face__contact-copy .face__points,
+#css3d-layer .face[data-face='contact'] .face__contact-copy .face__links {
+  margin-top: clamp(6px, 2cqw, 12px);
+}
+
+#css3d-layer .face[data-face='contact'] .face__contact-copy .face__lede {
+  margin-top: 0;
+}
+
+#css3d-layer .face[data-face='contact'] .face__qr {
+  flex: 0 0 auto;
+  width: clamp(132px, 40cqw, 184px);
+  max-width: 52%;
+  margin: 0 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(2px, 1cqw, 6px);
+  color: var(--ink);
+}
+
+#css3d-layer .face__qr svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+}
+
+#css3d-layer .face__qr figcaption {
+  flex: 0 0 auto;
+  font-size: clamp(8px, 2.6cqw, 11px);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+#css3d-layer .face__more,
+#css3d-layer .face__cta {
   margin-top: auto;
+  text-decoration: none;
   align-self: flex-start;
   padding: clamp(4px, 1.8cqw, 9px) clamp(9px, 3.6cqw, 18px);
   font-size: clamp(9px, 3.2cqw, 13px);
@@ -168,7 +294,12 @@ html.cube-mode.cube-ready .stage__layer {
     background-color 0.16s var(--ease);
 }
 
-#css3d-layer .face__more:hover {
+#css3d-layer .face[data-face='contact'] .face__cta {
+  margin-top: clamp(6px, 2cqw, 12px);
+}
+
+#css3d-layer .face__more:hover,
+#css3d-layer .face__cta:hover {
   color: var(--surface);
   background: var(--ink);
   border-color: var(--ink);
@@ -180,7 +311,21 @@ html.cube-mode.cube-ready .stage__layer {
 }
 
 /* Small faces — phones, mostly. Two lines of lede, two bullets. */
+@container (max-width: 280px) {
+  #css3d-layer .face__hooks {
+    display: none;
+  }
+}
+
 @container (max-width: 250px) {
+  #css3d-layer .face__qr {
+    display: none;
+  }
+
+  #css3d-layer .face[data-face='contact'] .face__cta {
+    margin-top: auto;
+  }
+
   #css3d-layer .face__lede {
     -webkit-line-clamp: 2;
     line-clamp: 2;
@@ -190,6 +335,12 @@ html.cube-mode.cube-ready .stage__layer {
   #css3d-layer .face__links li:nth-child(n + 4) {
     display: none;
   }
+
+  #css3d-layer .face[data-face='experience'] .face__points li:nth-child(n + 3),
+  #css3d-layer .face[data-face='impact'] .face__points li:nth-child(n + 3),
+  #css3d-layer .face[data-face='education'] .face__points li:nth-child(n + 3) {
+    display: list-item;
+  }
 }
 
 /* Tiny faces — a short landscape window. Bullets and tags wrap onto two lines
@@ -197,8 +348,15 @@ html.cube-mode.cube-ready .stage__layer {
    its headline and the way in. Contact keeps its links: they are the point. */
 @container (max-width: 210px) {
   #css3d-layer .face__points,
-  #css3d-layer .face__tags {
+  #css3d-layer .face__tags,
+  #css3d-layer .face__pipeline {
     display: none;
+  }
+
+  #css3d-layer .face[data-face='experience'] .face__points,
+  #css3d-layer .face[data-face='impact'] .face__points,
+  #css3d-layer .face[data-face='education'] .face__points {
+    display: grid;
   }
 }
 
@@ -211,17 +369,17 @@ html.cube-mode.cube-ready .stage__layer {
 }
 
 /* ------------------------------------------------------------------ *
- * While the detail panel is open the cube steps aside
+ * While the detail popup is open the 3D cube yields the screen.
+ * CSS3D transforms paint above later siblings, so hiding the layers is
+ * what actually lets the modal sit on top.
  * ------------------------------------------------------------------ */
 html.panel-open .stage {
-  opacity: 0.35;
+  pointer-events: none;
 }
 
-@media (min-width: 62rem) {
-  html.panel-open .stage {
-    transform: translateX(-15%);
-    opacity: 0.55;
-  }
+html.cube-mode.cube-ready.panel-open .stage__layer {
+  opacity: 0;
+  pointer-events: none;
 }
 
 /* ------------------------------------------------------------------ *
@@ -233,7 +391,7 @@ html.list-mode .face-nav {
 
 /* CSS3DObject writes `position`, `transform`, `user-select` and friends
    straight onto each section, and those inline styles come along when the
-   sections move back into the document — the Projects face would render
+   sections move back into the document — the back face would render
    upside down. Author `!important` outranks a plain inline declaration, so
    the overrides lift cleanly when the class comes off again, leaving the
    renderer's own transform cache untouched. */

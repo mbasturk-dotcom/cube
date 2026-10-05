@@ -60,6 +60,7 @@ export function createControls({ stage, reducedMotion, onTap, onFaceChange }) {
 
   let lastInput = performance.now();
   let driftAmount = 0;
+  let still = false;
   let lastFrame = performance.now();
   let faceIndex = 0;
 
@@ -124,10 +125,12 @@ export function createControls({ stage, reducedMotion, onTap, onFaceChange }) {
    * Pointer input
    * ---------------------------------------------------------------- */
   function onPointerDown(event) {
-    if (!enabled || pointerId !== null) return;
+    if (!enabled || !document.documentElement.classList.contains('cube-mode')) return;
+    if (pointerId !== null) return;
     if (event.pointerType === 'mouse' && event.button !== 0) return;
-    // Let real controls behave like real controls.
-    if (event.target.closest('a, button')) return;
+    // The gesture has to win over text selection and the browser's own
+    // link-drag, including when the press lands on a word.
+    event.preventDefault();
 
     pointerId = event.pointerId;
     // Pointer capture retargets every later event to the stage, so the only
@@ -191,7 +194,10 @@ export function createControls({ stage, reducedMotion, onTap, onFaceChange }) {
 
     if (wasTap) {
       settle();
-      onTap?.(target);
+      const control =
+        target instanceof Element ? target.closest('a[href], button') : null;
+      if (control instanceof HTMLElement) control.click();
+      else onTap?.(target);
       return;
     }
 
@@ -259,10 +265,15 @@ export function createControls({ stage, reducedMotion, onTap, onFaceChange }) {
     event.preventDefault();
   }
 
+  function onDragStart(event) {
+    if (document.documentElement.classList.contains('cube-mode')) event.preventDefault();
+  }
+
   stage.addEventListener('pointerdown', onPointerDown);
   stage.addEventListener('pointermove', onPointerMove);
   stage.addEventListener('pointerup', onPointerUp);
   stage.addEventListener('pointercancel', onPointerCancel);
+  stage.addEventListener('dragstart', onDragStart);
   document.addEventListener('keydown', onKeyDown);
 
   /* ---------------------------------------------------------------- *
@@ -301,7 +312,11 @@ export function createControls({ stage, reducedMotion, onTap, onFaceChange }) {
     // Idle drift: a slow, small wobble that keeps the cube feeling alive
     // without ever making the front face hard to read.
     const wantsDrift =
-      enabled && mode === 'rest' && !reducedMotion() && now - lastInput > IDLE_DELAY;
+      enabled &&
+      !still &&
+      mode === 'rest' &&
+      !reducedMotion() &&
+      now - lastInput > IDLE_DELAY;
     const targetAmount = wantsDrift ? 1 : 0;
     if (driftAmount !== targetAmount) {
       const rate = Math.min(1, dt / 700);
@@ -342,6 +357,16 @@ export function createControls({ stage, reducedMotion, onTap, onFaceChange }) {
     get isDragging() {
       return mode === 'drag';
     },
+    setStill(value) {
+      const next = Boolean(value);
+      if (next === still) return;
+      still = next;
+      if (still) driftAmount = 0;
+      else lastInput = performance.now();
+      if (still) stage.dataset.still = 'true';
+      else delete stage.dataset.still;
+      dirty = true;
+    },
     setEnabled(value) {
       enabled = value;
       if (!enabled) {
@@ -360,6 +385,7 @@ export function createControls({ stage, reducedMotion, onTap, onFaceChange }) {
       stage.removeEventListener('pointermove', onPointerMove);
       stage.removeEventListener('pointerup', onPointerUp);
       stage.removeEventListener('pointercancel', onPointerCancel);
+      stage.removeEventListener('dragstart', onDragStart);
       document.removeEventListener('keydown', onKeyDown);
     },
   };

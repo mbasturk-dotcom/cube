@@ -82,7 +82,12 @@ function boot() {
     reducedMotion,
   });
 
-  const background = [document.querySelector('.site-header'), stage, navElement];
+  const background = [
+    document.querySelector('.site-header'),
+    stage,
+    document.getElementById('roll'),
+    navElement,
+  ];
 
   panel.onOpen = () => {
     controls.setEnabled(false);
@@ -126,6 +131,7 @@ function boot() {
     onFaceChange(index) {
       nav.setActive(index);
       if (mode === 'cube') a11y.setActive(index);
+      controls.setStill(sections[index]?.dataset.face === 'contact');
     },
     onTap(target) {
       // A tap on the face you are already looking at opens its detail.
@@ -205,13 +211,13 @@ function boot() {
       a11y.reset();
       navElement.hidden = true;
       viewToggle.setAttribute('aria-pressed', 'true');
-      viewToggle.textContent = 'View as cube';
+      viewToggle.textContent = 'Küp olarak gör';
     } else {
       root.classList.remove('list-mode');
       root.classList.add('cube-mode');
       navElement.hidden = false;
       viewToggle.setAttribute('aria-pressed', 'false');
-      viewToggle.textContent = 'View as list';
+      viewToggle.textContent = 'Liste olarak gör';
       // The CSS3D renderer re-adopts the elements on its next draw.
       layout.apply();
       a11y.setActive(controls.activeFace);
@@ -225,6 +231,61 @@ function boot() {
   });
 
   /* ------------------------------------------------------------------ *
+   * True random — RANDOM.ORG integer, then mod 6 picks the die face.
+   * ------------------------------------------------------------------ */
+  const RANDOM_URL =
+    'https://www.random.org/integers/?num=1&min=1&max=1000000000&col=1&base=10&format=plain&rnd=new';
+
+  const roll = document.getElementById('roll');
+  const rollButton = document.getElementById('roll-button');
+  const rollHelp = document.getElementById('roll-help');
+  const rollNote = document.getElementById('roll-note');
+  const rollResult = document.getElementById('roll-result');
+
+  rollHelp.addEventListener('click', (event) => {
+    event.stopPropagation();
+    const open = rollHelp.getAttribute('aria-expanded') === 'true';
+    rollHelp.setAttribute('aria-expanded', open ? 'false' : 'true');
+  });
+
+  document.addEventListener('click', (event) => {
+    if (rollHelp.contains(event.target) || rollNote.contains(event.target)) return;
+    rollHelp.setAttribute('aria-expanded', 'false');
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') rollHelp.setAttribute('aria-expanded', 'false');
+  });
+
+  rollButton.addEventListener('click', async () => {
+    if (rollButton.disabled) return;
+    rollButton.disabled = true;
+    rollResult.textContent = '…';
+
+    try {
+      const response = await fetch(RANDOM_URL);
+      const body = (await response.text()).trim();
+      if (!response.ok) throw new Error(body || 'HTTP');
+      const value = Number(body);
+      if (!Number.isInteger(value)) throw new Error(body || 'yanıt');
+
+      const remainder = value % 6;
+      const die = remainder === 0 ? 6 : remainder;
+      const index = die - 1;
+      const label = sections[index].dataset.label ?? '';
+      rollResult.textContent = `${value} mod 6 = ${remainder} → ${die} · ${label}`;
+
+      if (mode === 'list') setMode('cube');
+      else panel.close({ immediate: true });
+      controls.goToFace(index);
+    } catch {
+      rollResult.textContent = 'RANDOM.ORG yanıt vermedi.';
+    } finally {
+      rollButton.disabled = false;
+    }
+  });
+
+  /* ------------------------------------------------------------------ *
    * Go
    * ------------------------------------------------------------------ */
   root.classList.add('cube-mode');
@@ -232,6 +293,7 @@ function boot() {
 
   navElement.hidden = false;
   viewToggle.hidden = false;
+  roll.hidden = false;
 
   a11y.setActive(0);
   nav.setActive(0);
