@@ -11,6 +11,7 @@ import { createControls } from './cube/controls.js';
 import { createNav } from './ui/nav.js';
 import { createPanel } from './ui/panel.js';
 import { createFaceA11y } from './ui/a11y.js';
+import { createI18n, rememberLang, storedLang } from './i18n.js';
 
 const root = document.documentElement;
 
@@ -28,7 +29,12 @@ function boot() {
     if (!element) throw new Error(`No markup for face "${face.id}"`);
     return element;
   });
-  const labels = sections.map((section) => section.dataset.label ?? '');
+
+  const i18n = createI18n(document);
+  i18n.apply(storedLang());
+
+  const faceLabel = (index) => sections[index]?.dataset.label ?? '';
+  const labels = () => sections.map((section) => section.dataset.label ?? '');
 
   const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
   const reducedMotion = () => motionQuery.matches;
@@ -120,7 +126,7 @@ function boot() {
     });
   });
 
-  const nav = createNav(navElement, labels, (index) => controls.goToFace(index));
+  const nav = createNav(navElement, labels(), (index) => controls.goToFace(index));
 
   /* ------------------------------------------------------------------ *
    * Controls
@@ -211,13 +217,13 @@ function boot() {
       a11y.reset();
       navElement.hidden = true;
       viewToggle.setAttribute('aria-pressed', 'true');
-      viewToggle.textContent = 'Küp olarak gör';
+      viewToggle.textContent = i18n.t('view.cube');
     } else {
       root.classList.remove('list-mode');
       root.classList.add('cube-mode');
       navElement.hidden = false;
       viewToggle.setAttribute('aria-pressed', 'false');
-      viewToggle.textContent = 'Liste olarak gör';
+      viewToggle.textContent = i18n.t('view.list');
       // The CSS3D renderer re-adopts the elements on its next draw.
       layout.apply();
       a11y.setActive(controls.activeFace);
@@ -225,6 +231,40 @@ function boot() {
       requestAnimationFrame(() => root.classList.add('cube-ready'));
     }
   }
+
+  let lastRoll = null;
+
+  function paintRoll() {
+    if (!lastRoll) return;
+    if (lastRoll.error) {
+      rollResult.textContent = i18n.t('roll.fail');
+      return;
+    }
+    const { value, remainder, die, index } = lastRoll;
+    rollResult.textContent = `${value} mod 6 = ${remainder} → ${die} · ${faceLabel(index)}`;
+  }
+
+  function refreshLanguage() {
+    nav.setLabels(labels());
+    viewToggle.textContent = mode === 'list' ? i18n.t('view.cube') : i18n.t('view.list');
+    const openDetail = document.querySelector('#panel-body .face__detail');
+    if (openDetail) {
+      document.getElementById('panel-title').textContent =
+        openDetail.dataset.detailTitle ?? '';
+    }
+    liveRegion.textContent = faceLabel(controls.activeFace);
+    paintRoll();
+    invalidate();
+  }
+
+  document.querySelectorAll('.lang__option').forEach((button) => {
+    button.addEventListener('click', () => {
+      const next = button.dataset.lang === 'en' ? 'en' : 'tr';
+      i18n.apply(next);
+      rememberLang(next);
+      refreshLanguage();
+    });
+  });
 
   viewToggle.addEventListener('click', () => {
     setMode(mode === 'cube' ? 'list' : 'cube');
@@ -272,14 +312,15 @@ function boot() {
       const remainder = value % 6;
       const die = remainder === 0 ? 6 : remainder;
       const index = die - 1;
-      const label = sections[index].dataset.label ?? '';
-      rollResult.textContent = `${value} mod 6 = ${remainder} → ${die} · ${label}`;
+      lastRoll = { value, remainder, die, index };
+      paintRoll();
 
       if (mode === 'list') setMode('cube');
       else panel.close({ immediate: true });
       controls.goToFace(index);
     } catch {
-      rollResult.textContent = 'RANDOM.ORG yanıt vermedi.';
+      lastRoll = { error: true };
+      paintRoll();
     } finally {
       rollButton.disabled = false;
     }
@@ -293,6 +334,7 @@ function boot() {
 
   navElement.hidden = false;
   viewToggle.hidden = false;
+  viewToggle.textContent = i18n.t('view.list');
   roll.hidden = false;
 
   a11y.setActive(0);

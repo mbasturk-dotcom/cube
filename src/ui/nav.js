@@ -28,5 +28,12 @@ export function createNav(navElement, labels, onSelect) {
         item.setAttribute('aria-current', String(i === index));
       });
     },
+    setLabels(labels) {
+      items.forEach((item, i) => {
+        const label = labels[i] ?? '';
+        item.setAttribute('aria-label', label);
+        item.querySelector('.face-nav__label').textContent = label;
+      });
+    },
   };
 }

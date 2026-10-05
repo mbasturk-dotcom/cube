@@ -145,6 +145,8 @@ button {
   display: flex;
   align-items: center;
   flex-shrink: 0;
+  flex-wrap: wrap;
+  justify-content: flex-end;
   gap: 0.45rem;
 }
 
@@ -265,7 +267,8 @@ html.list-mode .roll {
 }
 
 .view-toggle,
-.header-download {
+.header-download,
+.lang__option {
   padding: 0.35rem 0.75rem;
   font-size: 0.75rem;
   letter-spacing: 0.04em;
@@ -276,16 +279,29 @@ html.list-mode .roll {
   border-radius: 999px;
   text-decoration: none;
   white-space: nowrap;
-  transition: color 0.16s var(--ease), border-color 0.16s var(--ease);
+  transition: color 0.16s var(--ease), border-color 0.16s var(--ease),
+    background-color 0.16s var(--ease);
+}
+
+.lang {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.lang__option {
+  padding-inline: 0.5rem;
 }
 
 .view-toggle:hover,
-.header-download:hover {
+.header-download:hover,
+.lang__option:hover {
   color: var(--ink);
   border-color: var(--ink-faint);
 }
 
-.view-toggle[aria-pressed='true'] {
+.view-toggle[aria-pressed='true'],
+.lang__option[aria-pressed='true'] {
   color: var(--surface);
   background: var(--ink);
   border-color: var(--ink);
@@ -295,16 +311,24 @@ html.list-mode .roll {
   .site-header {
     height: auto;
     min-height: var(--header-h);
-    gap: 0.5rem;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.35rem 0.5rem;
     padding: 0.4rem 0.75rem;
   }
 
+  .wordmark {
+    flex: 1 1 auto;
+  }
+
   .header-actions {
+    flex: 1 1 100%;
     gap: 0.3rem;
   }
 
   .view-toggle,
-  .header-download {
+  .header-download,
+  .lang__option {
     padding: 0.3rem 0.5rem;
     letter-spacing: 0.02em;
   }
